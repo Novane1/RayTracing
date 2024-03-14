@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdlib.h>
 #include <iostream>
+using namespace std;
 class vec3
 {
 
@@ -64,8 +65,14 @@ inline std::ostream& operator <<(std::ostream& os, const vec3& t) {
 }
 
 inline void vec3::make_unit_vector() {
-	float k = 1.0 / sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
-	e[0] *= k; e[1] *= k; e[2] *= k;
+	float v = sqrt(e[0] * e[0] + e[1] * e[1] + e[2] * e[2]);
+	if (v!=0) {
+		float k = 1.0 / v;
+		e[0] *= k; e[1] *= k; e[2] *= k;
+	}
+	
+	
+	
 }
 
 inline vec3 operator+ (const vec3& v1, const vec3& v2) {
@@ -152,7 +159,14 @@ inline vec3& vec3::operator/=(const float t) {
 
 inline vec3 unit_vector(vec3 v) {
 	float l = v.length();
-	return vec3(v.e[0] / l, v.e[1] / l, v.e[2] / l);
+	if (l != 0)
+	{
+		return vec3(v.e[0] / l, v.e[1] / l, v.e[2] / l);
+	}
+	else {
+		return vec3(0, 0, 0);
+	}
+	
 }
 
 
