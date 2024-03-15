@@ -33,17 +33,26 @@ float hit_sphere_float(const vec3& center, float radius, const ray& r) {
 
 }
 
+vec3 random_in_unit_sphere() {
+	vec3 p;
+	std::random_device rd;
+	std::mt19937 gen(rd());
+	std::uniform_real_distribution<double> dis(0.0, 1.0);
+	do {
+		p = 2.0 * vec3(dis(gen), dis(gen), dis(gen)) - vec3(1, 1, 1);
+	} while (p.squared_length() >= 1.0);
+	return p;
+
+}
 
 //End of this section
 vec3 color(const ray& r,hitable *world) {
 
 	hit_record rec;
-	if (world->hit(r, 0.0,FLT_MAX , rec)) {
-		if (rec.normal.x()< -4   ) {
-			cout << rec.normal << endl;
-		}
-		vec3 up = 0.5 * vec3(rec.normal.x() + 1, rec.normal.y() + 1, rec.normal.z() + 1);
-		return up;
+	if (world->hit(r, 0.001,FLT_MAX , rec)) {
+
+		vec3 target = rec.p + rec.normal + random_in_unit_sphere();
+		return 0.5 * color(ray(rec.p,target-rec.p),world);
 	}
 	else{
 		vec3 unit_direction = unit_vector(r.direction());
@@ -53,9 +62,9 @@ vec3 color(const ray& r,hitable *world) {
 
 		return up;
 	}
-	
-	
 }
+
+
 
 int main() {
 	std::random_device rd;
@@ -63,7 +72,7 @@ int main() {
 	std::uniform_real_distribution<double> dis(0.0, 1.0);
 	int nx = 200;
 	int ny = 100;
-	int ns = 100;
+	int ns = 10;
 	ofstream outputFile("output.ppm");
 	outputFile << "P3\n" << nx << " " << ny << "\n255\n";
 	vec3 lower_left_corner(-2.0, -1.0, -1.0);
@@ -86,7 +95,7 @@ int main() {
 				col += color(r, world);
 			}
 			col /= float(ns);
-			
+			col = vec3(sqrt(col[0]), sqrt(col[1]), sqrt(col[2]));
 			
 
 			
