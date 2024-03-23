@@ -28,7 +28,7 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const 
 			rec.p = r.point_at_parameter(rec.t);
 
 			rec.normal = unit_vector((rec.p - center) );
-
+			rec.mat_ptr = mater;
 			return true;
 		}
 		temp = (-b + sqrt(b * b - 4 * a * c)) / a;
@@ -36,6 +36,7 @@ bool sphere::hit(const ray& r, float t_min, float t_max, hit_record& rec) const 
 			rec.t = temp;
 			rec.p = r.point_at_parameter(rec.t);
 			rec.normal = unit_vector((rec.p - center) );
+			rec.mat_ptr = mater;
 			return true;
 		}
 	}
